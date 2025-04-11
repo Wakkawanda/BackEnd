@@ -1,70 +1,58 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+using System.DirectoryServices.Protocols;
+using System.Net;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace BackEnd;
 
 class Program
 {
-    //private static Settings.Settings s;
-    
-    private static readonly HttpClient client = new HttpClient();
-    private static readonly string apiUrl = "https://localhost:7100/api/items"; // Замените на URL вашего API
+    private static Settings.Settings s;
 
-    static async Task Main(string[] args)
+    static void Main(string[] args)
     {
-        Console.WriteLine("Connecting to API...");
+        string d = File.ReadAllText("C:\\Users\\verao\\Desktop\\BackEnd\\BackEnd\\BackEnd\\Configuration.json");
+        s = JsonConvert.DeserializeObject<Settings.Settings>(d)!;
 
-        await GetItems();
-        await AddItem("New Item from Console");
-        await GetItems(); // Get items again to see the added item
+        var builder = WebApplication.CreateBuilder(args);
 
-        Console.WriteLine("Press any key to exit.");
-        Console.ReadKey();
+        // Add services to the container.
+        builder.Services.AddControllers();
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization(); // Может понадобиться для авторизации.  Пока не используется, но лучше оставить
+
+        app.MapControllers();
+
+        app.Run();
     }
 
-    static async Task GetItems()
+    public void conLdap()
     {
-        try
-        {
-            HttpResponseMessage response = await client.GetAsync(apiUrl);
-            response.EnsureSuccessStatusCode();  // Throws exception if status code is not successful.
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            // Десериализация JSON ответа в список строк (или другой нужный тип)
-            var items = JsonConvert.DeserializeObject<string[]>(responseBody);  // Предполагаем, что API возвращает массив строк
-
-            Console.WriteLine("\nItems:");
-            foreach (var item in items)
-            {
-                Console.WriteLine(item);
-            }
-        }
-        catch (HttpRequestException e)
-        {
-            Console.WriteLine("\nException Caught!");
-            Console.WriteLine("Message :{0} ", e.Message);
-        }
+        string uname = "i22s0659";
+        string password = "kNpcqHrW";
+        
+        LdapConnection connection = new LdapConnection(s.LdapIp);
+        connection.Credential = new NetworkCredential(uname, password);
+        
+        connection.Bind();
+        connection.Dispose();
+        
     }
-
-    static async Task AddItem(string newItem)
-    {
-        try
-        {
-            string json = JsonConvert.SerializeObject(newItem);  // Сериализуем строку в JSON
-            var content = new StringContent(json, Encoding.UTF8, "application/json");  // Указываем Content-Type
-
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-            response.EnsureSuccessStatusCode();
-
-            Console.WriteLine("\nItem added successfully.");
-        }
-        catch (HttpRequestException e)
-        {
-            Console.WriteLine("\nException Caught!");
-            Console.WriteLine("Message :{0} ", e.Message);
-        }
-    }
-    
-    //string d = File.ReadAllText("C:\\Users\\verao\\Desktop\\BackEnd\\BackEnd\\BackEnd\\Configuration.json");
-    //s = JsonConvert.DeserializeObject<Settings.Settings>(d)!;
 }

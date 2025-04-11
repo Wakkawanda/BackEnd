@@ -9,7 +9,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://localhost:7100/api/auth/login', { // Замените URL на ваш API endpoint
+      const response = await axios.post('https://localhost:3000', { // Замените URL на ваш API endpoint
         login,
         password
       });
