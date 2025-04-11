@@ -6,10 +6,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        LDAP ld = new LDAP();
-        ld.LDAPConn();
-        
-        
         var builder = WebApplication.CreateBuilder(args);
         
         // Добавляем CORS

@@ -1,5 +1,0 @@
-{
-    "IP": "ldap2.it-college.ru",
-    "Port": "389",
-    "BaseDN": "dc=it-college,dc=ru"
-}

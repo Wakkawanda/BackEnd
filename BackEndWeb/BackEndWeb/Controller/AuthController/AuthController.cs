@@ -6,15 +6,19 @@ namespace BackEndWeb.Controller.AuthController;
 [Route("api/[controller]")] //api/AuthController/login
 public class AuthController : ControllerBase
 {
+    LDAP ld = new LDAP();
+    
+    
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
         Console.WriteLine("Выполнение Авторизации");
-        // Валидация, аутентификация, и т.д.
-        if (request.Username == "user" && request.Password == "password")
+        
+        if (ld.LDAPConn(request.Username, request.Password))
         {
             return Ok(new { message = "Login successful" });
         }
+        
         return Unauthorized();
     }
 }

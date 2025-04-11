@@ -1,52 +1,29 @@
 ﻿using System.DirectoryServices.Protocols;
-using System.Net;
 
 namespace BackEndWeb;
 
 public class LDAP
 {
-    public void LDAPConn()
+    public bool LDAPConn(string userName, string password)
     {
-        string userName = "i22s0659";
-        string password = "kNpcqHrW";
-        string ip = "ldap2.it-college.ru";
-        int port = 389;
-        string dn = $"uid={userName},ou=People";
-        string basend = "dc=it-college,dc=ru";
+        string host = "ldap2.it-college.ru:389";
+        string dn = $"uid={userName},ou=People,dc=it-college,dc=ru"; // DN пользователя для подключения
 
         try
         {
-            LdapConnection connection = new LdapConnection(new LdapDirectoryIdentifier($"LDAP://{ip}", port));
-            
-            NetworkCredential credential = new NetworkCredential(userName, password);
-            connection.Credential = credential;
-            
+            LdapConnection connection = new LdapConnection(new LdapDirectoryIdentifier(host, 389)); //10.3.0.33
+            connection.Credential = new System.Net.NetworkCredential(dn, password);
+            connection.AuthType = AuthType.Basic;
+            connection.SessionOptions.ProtocolVersion = 3;
             connection.Bind();
-            Console.WriteLine("Подключение успешно!");
-            
-            string searchBase = "ou=People,dc=it-college,dc=ru"; // Базовый DN для поиска
-            string searchFilter = $"(uid={userName})"; // Фильтр для поиска пользователя
-            
-            SearchRequest searchRequest = new SearchRequest(searchBase, searchFilter, SearchScope.Subtree, null);
-            SearchResponse searchResponse = (SearchResponse)connection.SendRequest(searchRequest);
 
-            // Проверяем, есть ли результаты
-            if (searchResponse.Entries.Count > 0)
-            {
-                Console.WriteLine($"Пользователь найден: {searchResponse.Entries[0].DistinguishedName}");
-            }
-            else
-            {
-                Console.WriteLine("Пользователь не найден.");
-            }
-        }
-        catch (LdapException ldapEx)
-        {
-            Console.WriteLine($"LDAP ошибка: {ldapEx.Message}");
+            return true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка: {ex.Message}");
+            Console.WriteLine($"Провал: {ex.Message}");
         }
+
+        return false;
     }
 }
