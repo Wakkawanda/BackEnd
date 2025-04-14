@@ -1,37 +1,31 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function Login() {
+  const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const Navigate = useNavigate();
 
      const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const response = await axios.post('https://localhost:44330/api/auth/login', {
+          const response = await axios.post('http://10.3.24.110:5288/api/auth/login', {
             username,
             password
           });
     
-          if (response.data.success) {
-            setMessage('Вошёл');
+          if (response.status === 200) {
+            setMessage(response.data.message || 'Login successful');
             Navigate('/home');
-          } else {
-            setMessage('Не вошёл');
           }
         } catch (error) {
           console.error('Ошибка при аутентификации:', error);
-          setMessage('Ошибка соединения');
+          setMessage('Не вошёл');
         }
       };
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   console.log('Login attempted with:', { email, password });
-    // Here you would typically send a request to your server
-  
 
   return (
     <Container>

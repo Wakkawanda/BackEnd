@@ -3,7 +3,7 @@ import{BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Login from './pages/login/auth.jsx';
 import Home from './pages/home/home.jsx';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
