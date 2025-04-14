@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
     
           if (response.status === 200) {
             setMessage(response.data.message || 'Login successful');
-            Navigate('/home');
+            Navigate('/home', { state: { data: response.data } });
           }
         } catch (error) {
           console.error('Ошибка при аутентификации:', error);
