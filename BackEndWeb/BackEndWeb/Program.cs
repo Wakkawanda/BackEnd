@@ -14,7 +14,7 @@ public class Program
             options.AddPolicy("AllowSpecificOrigin",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000") // Укажите ваш фронтенд
+                    builder.WithOrigins("http://localhost:3000")
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });

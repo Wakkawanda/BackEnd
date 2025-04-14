@@ -3,15 +3,15 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
 const Login = () => {
-  const [login, setLogin] = useState('');
+  const [username, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://82.151.196.167:5288/api/auth/login', {
-        login,
+      const response = await axios.post('https://localhost:44330/api/auth/login', {
+        username,
         password
       });
 
@@ -36,7 +36,7 @@ const Login = () => {
           <input
             id="login"
             type="text"
-            value={login}
+            value={username}
             onChange={(e) => setLogin(e.target.value)}
           />
         </div>

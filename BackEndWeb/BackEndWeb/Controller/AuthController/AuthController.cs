@@ -16,9 +16,11 @@ public class AuthController : ControllerBase
         
         if (ld.LDAPConn(request.Username, request.Password))
         {
+            Console.WriteLine("OK");
             return Ok(new { message = "Login successful" });
         }
-        
+
+        Console.WriteLine("Bedd");
         return Unauthorized();
     }
 }
